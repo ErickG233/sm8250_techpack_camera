@@ -1756,6 +1756,9 @@ int32_t cam_cci_core_cfg(struct v4l2_subdev *sd,
 		CAM_WARN(CAM_CCI, "CCI hardware is resetting");
 		return -EAGAIN;
 	}
+#ifdef CONFIG_MACH_LGE
+    mutex_lock(&cci_dev->global_mutex);
+#endif
 	CAM_DBG(CAM_CCI, "master = %d, cmd = %d", master, cci_ctrl->cmd);
 
 	switch (cci_ctrl->cmd) {
@@ -1791,6 +1794,8 @@ int32_t cam_cci_core_cfg(struct v4l2_subdev *sd,
 	}
 
 	cci_ctrl->status = rc;
-
+#ifdef CONFIG_MACH_LGE
+    mutex_unlock(&cci_dev->global_mutex);
+#endif
 	return rc;
 }
